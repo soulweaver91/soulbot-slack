@@ -1,0 +1,15 @@
+The spirits whisper: {}.
+The cards read: {}.
+The horoscope says: {}.
+Chuck Norris decided: {}.
+An old book reads: {}.
+An old tale says: {}.
+Your neighbour shouts over the street: "{}!"
+{} is the only viable choice according to an old legend.
+SoulBot's choice is {}.
+The Magic Ball says: {}.
+"{}! I choose you!" –Ash Ketchum
+It's common knowledge that only {} is acceptable.
+Lang Zi says... "{}!"
+{} is statistically a good choice.
+{} is the choice of Steins Gate!
