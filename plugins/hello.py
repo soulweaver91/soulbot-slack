@@ -9,3 +9,7 @@ def process_message(data):
             data["channel"],
             "Hello, {}!".format(usersvc.get_user_name(data["user"]))
         ])
+
+
+def get_module_help():
+    return 'Any message with \'hello\': Get greeted.'
