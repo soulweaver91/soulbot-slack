@@ -1,7 +1,5 @@
 *.pyc
 /rtmbot.conf
-/plugins/**
-/new_plugins/**
 /build/**
 *.log
 env
@@ -16,3 +14,5 @@ tests/.cache
 dist/
 rtmbot.egg-info/
 MANIFEST
+
+soulbot.conf
