@@ -1,7 +1,3 @@
-#!/usr/local/bin/python
-# -*- coding: utf-8 -*-
-
-import shlex
 import re
 import random
 
@@ -18,10 +14,9 @@ def process_message(data):
     :return: None
     """
 
-    cmd = data["text"].split()[0]
+    if data["soulbot_command"] == 'shipme':
+        args = data["soulbot_args_shlex"]
 
-    if cmd == '!shipme':
-        args = shlex.split(' '.join(data["text"].split(' ')[1:]))
         shipname = []
         for i in range(0, random.randint(1, 3)):
             shipname.append(wordsvc.get_random_word().capitalize())

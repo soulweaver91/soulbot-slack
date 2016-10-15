@@ -15,7 +15,7 @@ def random_choice(data):
     :return: None
     """
 
-    items = list(filter(None, [s.strip() for s in data["text"][7:].split('/')]))
+    items = list(filter(None, [s.strip() for s in data["soulbot_args_shlex"]]))
 
     if len(items) > 1 and random.random() > helpful_ratio:
         reply = random.choice(hazy_replies)
@@ -38,11 +38,9 @@ def throw_dice(data):
     :return: None
     """
 
-    args = data["text"].split()[1:]
-
-    if len(args) > 0:
+    if len(data["soulbot_args_space"]) > 0:
         try:
-            sides = int(args[0])
+            sides = int(data["soulbot_args_space"][0])
         except (TypeError, ValueError):
             return outputs.append([data["channel"], "That doesn't seem like a number of sides."])
     else:
@@ -55,16 +53,14 @@ def throw_dice(data):
 
 
 def process_message(data):
-    cmd = data["text"].split()[0]
-
-    if cmd in ['!choose', '!choice']:
+    if data["soulbot_command"] in ['choose', 'choice']:
         return random_choice(data)
-    elif cmd in ['!die', '!dice']:
+    elif data["soulbot_command"] in ['die', 'dice']:
         return throw_dice(data)
 
 
 def get_module_help():
     return '\n'.join([
-        '`!choice` or `!choose`: Pick a random item from a slash-delimitered list.',
+        '`!choice` or `!choose`: Pick a random item. Use quotes for choices with multiple words.',
         '`!die` or `!dice`: Throw a die. Optionally, provide the number of sides: `!die 20`'
     ])

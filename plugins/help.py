@@ -15,7 +15,7 @@ def process_message(data):
     :return: None
     """
 
-    if data["text"][:5] == '!help':
+    if data["soulbot_command"] == 'help':
         help_strs = []
 
         for module in os.listdir('plugins'):
