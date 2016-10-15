@@ -6,7 +6,6 @@ import re
 import random
 
 from services import words as wordsvc, users as usersvc
-from client import slack_client as sc
 
 outputs = []
 
@@ -37,10 +36,9 @@ def process_message(data):
             if count <= 1:
                 return outputs.append([data["channel"], 'Please specify a number greater or equal to 2. :dansgame:'])
 
-            users = [usersvc.get_user_name(user) for
-                     user in sc.api_call('channels.info', channel=data["channel"])["channel"]["members"]]
-
+            users = usersvc.get_channel_user_names(data["channel"])
             own_name = usersvc.get_user_name(data["user"])
+
             try:
                 users.remove(own_name)
             except ValueError:
