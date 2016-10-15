@@ -1,6 +1,4 @@
-state = {
-    "users": {}
-}
+from client import slack_client as sc
 
 
 def get_user_name(user_id):
@@ -12,25 +10,7 @@ def get_user_name(user_id):
     """
 
     try:
-        user = state["users"].get(user_id, None)
-        return user["real_name"]
-    except KeyError:
+        user = sc.server.users.find(user_id)
+        return user.real_name
+    except AttributeError:
         return user_id
-
-
-def store_users(new_users):
-    """
-    Replaces the memorized user list with a new one.
-
-    :param new_users: The new user list as a dict received from the Slack API.
-    :return: None
-    """
-
-    old_users = state["users"].copy()
-    state["users"].clear()
-
-    try:
-        for user in new_users:
-            state["users"][user["id"]] = user
-    except KeyError:
-        state["users"] = old_users
