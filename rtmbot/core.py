@@ -10,6 +10,9 @@ from slackclient import SlackClient
 
 from rtmbot.utils.module_loading import import_string
 
+# SoulBot imports
+import shlex
+
 sys.dont_write_bytecode = True
 
 
@@ -110,6 +113,16 @@ class RtmBot(object):
         if "type" in data:
             function_name = "process_" + data["type"]
             self._dbg("got {}".format(function_name))
+
+            if data["type"] == "message":
+                if "text" in data and data["text"].startswith('!'):
+                    split_by_space = data["text"].split(' ')
+                    data["soulbot_command"] = split_by_space[0][1:]
+                    data["soulbot_args_space"] = split_by_space[1:]
+                    data["soulbot_args_shlex"] = shlex.split(' '.join(data["soulbot_args_space"]))
+                else:
+                    data["soulbot_command"] = None
+
             for plugin in self.bot_plugins:
                 plugin.do(function_name, data)
 
