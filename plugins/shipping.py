@@ -1,50 +1,60 @@
 import re
 import random
 
-from services import words as wordsvc, users as usersvc
+from services.words import WordService
+from services.users import UserService
 
-outputs = []
+from rtmbot.core import Plugin
 
 
-def process_message(data):
-    """
-    Creates a shipping name out of users of the channel or the given names.
+class SoulbotShippingPlugin(Plugin):
+    wordsvc = WordService()
 
-    :param data: RTM message.
-    :return: None
-    """
+    def __init__(self, name=None, slack_client=None, plugin_config=None):
+        super().__init__(name=name, slack_client=slack_client, plugin_config=plugin_config)
+        self.usersvc = UserService(client=slack_client)
 
-    if data["soulbot_command"] == 'shipme':
-        args = data["soulbot_args_shlex"]
+    def process_message(self, data):
+        """
+        Creates a shipping name out of users of the channel or the given names.
 
-        shipname = []
-        for i in range(0, random.randint(1, 3)):
-            shipname.append(wordsvc.get_random_word().capitalize())
-        shipname.append('Shipping')
-        shipname = ''.join(shipname)
+        :param data: RTM message.
+        :return: None
+        """
 
-        if len(args) == 0:
-            args.append('2')
+        if data["soulbot_command"] == 'shipme':
+            args = data["soulbot_args_shlex"]
 
-        if re.match(r'^\d+$', args[0]) and len(args) == 1:
-            count = int(args[0])
-            if count <= 1:
-                return outputs.append([data["channel"], 'Please specify a number greater or equal to 2. :dansgame:'])
+            shipname = []
+            for i in range(0, random.randint(1, 3)):
+                shipname.append(self.wordsvc.get_random_word().capitalize())
+            shipname.append('Shipping')
+            shipname = ''.join(shipname)
 
-            users = usersvc.get_channel_user_names(data["channel"])
-            own_name = usersvc.get_user_name(data["user"])
+            if len(args) == 0:
+                args.append('2')
 
-            try:
-                users.remove(own_name)
-            except ValueError:
-                pass
+            if re.match(r'^\d+$', args[0]) and len(args) == 1:
+                count = int(args[0])
+                if count <= 1:
+                    return self.outputs.append([data["channel"],
+                                                'Please specify a number greater or equal to 2. :dansgame:'])
 
-            outputs.append([data["channel"], ' × '.join([own_name] + random.sample(users, min(len(users), count - 1))) +
-                            ' = ' + shipname])
-        elif len(args) > 1:
-            outputs.append([data["channel"], ' × '.join(args) + ' = ' + shipname])
-        else:
-            outputs.append([data["channel"], 'Please name a partner for {} first :lenny:'.format(args[0])])
+                users = self.usersvc.get_channel_user_names(data["channel"])
+                own_name = self.usersvc.get_user_name(data["user"])
+
+                try:
+                    users.remove(own_name)
+                except ValueError:
+                    pass
+
+                self.outputs.append([data["channel"], ' × '.join(
+                    [own_name] + random.sample(users, min(len(users), count - 1))
+                ) + ' = ' + shipname])
+            elif len(args) > 1:
+                self.outputs.append([data["channel"], ' × '.join(args) + ' = ' + shipname])
+            else:
+                self.outputs.append([data["channel"], 'Please name a partner for {} first :lenny:'.format(args[0])])
 
 
 def get_module_help():

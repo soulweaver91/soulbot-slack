@@ -1,14 +1,18 @@
-from services import users as usersvc
+from services.users import UserService
 
-outputs = []
+from rtmbot.core import Plugin
 
+class SoulbotHelloPlugin(Plugin):
+    def __init__(self, name=None, slack_client=None, plugin_config=None):
+        super().__init__(name=name, slack_client=slack_client, plugin_config=plugin_config)
+        self.usersvc = UserService(client=slack_client)
 
-def process_message(data):
-    if "hello" in data["text"]:
-        outputs.append([
-            data["channel"],
-            "Hello, {}!".format(usersvc.get_user_name(data["user"]))
-        ])
+    def process_message(self, data):
+        if "hello" in data["text"]:
+            self.outputs.append([
+                data["channel"],
+                "Hello, {}!".format(self.usersvc.get_user_name(data["user"]))
+            ])
 
 
 def get_module_help():
